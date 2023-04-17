@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pharaoh-farm-pot-bot"
+version = "0.1.0"
+description = ""
+authors = ["DOFER998 <killmy666@gmail.com>"]
+readme = "README.md"
+packages = [{include = "pharaoh_farm_pot_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "^2.25.1"
+environs = "^9.5.0"
+web3 = "^6.1.0"
+pymongo = "^4.3.3"
+apscheduler = "^3.10.1"
+moralis = "^0.1.34"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
