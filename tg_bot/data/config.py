@@ -8,6 +8,7 @@ RPS = env.str("RPS")
 CONTRACT = env.str("CONTRACT")
 MORALIS_API_KEY = env.str("MORALIS_API_KEY")
 MORALIS_CHAIN = env.str("MORALIS_CHAIN")
+BSC_API_KEY = env.str("BSC_API_KEY")
 
 
 def info_message():

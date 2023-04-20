@@ -46,11 +46,27 @@ def get_user_intial_deposit(wallet):
     initial_deposit = int(payout[2]) / 1000000000000000000
     return initial_deposit
 
+# daily payout
 def calculate_payout(user_id):
     contractAddress = connecting().to_checksum_address(CONTRACT)
     watch = connecting().eth.contract(address=contractAddress, abi=abi())
     wallet = get_wallet_user(user_id)
-    payout = int(watch.functions.calculatePayout(wallet).call()) / 1000000000000000000
+    contract_balance = int(watch.functions.getContractBalance().call()) / 1000000000000000000
+    daily_payout_percentage = 0
+
+    if contract_balance <= 2500000:
+        daily_payout_percentage = 0.003
+    elif contract_balance <= 5000000:
+        daily_payout_percentage = 0.005
+    elif contract_balance <= 10000000:
+        daily_payout_percentage = 0.0075
+    else:
+        daily_payout_percentage = 0.01
+
+
+    balance = int(watch.functions.user_data(wallet).call()[1]) / 1000000000000000000
+
+    payout = daily_payout_percentage * balance
     return payout
 
 

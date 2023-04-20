@@ -9,9 +9,6 @@ def choice_start():
                                     inline_keyboard=[
                                         [
                                             InlineKeyboardButton(text="👤 Account", callback_data="check_account")
-                                        ],
-                                        [
-                                            InlineKeyboardButton(text="❗ Info", callback_data="info")
                                         ]
                                     ])
     return keyboard
@@ -66,6 +63,16 @@ def get_choice_wallet_cancel():
     keyboard = InlineKeyboardMarkup(row_width=2,
                                     inline_keyboard=[
                                         [
+                                            InlineKeyboardButton(text="❌ Cancel", callback_data="exit_states")
+                                        ]
+                                    ])
+    return keyboard
+
+def get_choice_wallet_edit():
+    keyboard = InlineKeyboardMarkup(row_width=2,
+                                    inline_keyboard=[
+                                        [
+                                            InlineKeyboardButton(text="✏️ Edit wallet", callback_data="edit_wallet"),
                                             InlineKeyboardButton(text="❌ Cancel", callback_data="exit_states")
                                         ]
                                     ])

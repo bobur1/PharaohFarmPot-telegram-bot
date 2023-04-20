@@ -4,7 +4,7 @@ from aiogram.types import BotCommand, BotCommandScopeChat, BotCommandScopeDefaul
 # Команды для юзеров
 user_commands = [
     BotCommand("start", "♻ Start and restart the bot"),
-    BotCommand("register_wallet", "📃 Register your Account"),
+    BotCommand("register_wallet", "📃 Register your Account wallet"),
     BotCommand("stats", "👀 Check your Pharaoh Farm Ptot Stats of your registered wallet"),
     BotCommand("help", "❓ Learn about the bot's functions")
 ]

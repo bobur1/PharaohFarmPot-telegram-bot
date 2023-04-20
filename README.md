@@ -17,8 +17,8 @@ Follow these steps to set up the PharaohFarmPot Telegram Bot:
 - Clone the repository:
 
 ```sh
-git clone https://github.com/bobur1/PharaohFarmPot-telegram-bot.git
-cd PharaohFarmPot-telegram-bot
+git clone REPO_LINK
+cd pharaohfarm_pot_bot
 ```
 
 - Install dependencies using Poetry:
