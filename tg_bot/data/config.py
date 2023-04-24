@@ -1,4 +1,5 @@
 from environs import Env
+import os
 
 env = Env()
 env.read_env()
@@ -9,7 +10,39 @@ CONTRACT = env.str("CONTRACT")
 MORALIS_API_KEY = env.str("MORALIS_API_KEY")
 MORALIS_CHAIN = env.str("MORALIS_CHAIN")
 BSC_API_KEY = env.str("BSC_API_KEY")
+NET_VALUE = env.int("NET_VALUE")
+NET_BLOCK = env.int("NET_BLOCK")
 
+def get_net_varibles():
+    # Read the .env file into a dictionary
+    env_vars = {}
+    with open('.env', 'r') as f:
+        for line in f:
+            if '=' in line:
+                key, value = line.strip().split('=', 1)
+                env_vars[key] = value
+        return int(env_vars['NET_VALUE']), int(env_vars['NET_BLOCK'])
+
+def update_net_varibles(new_value, new_block):
+    # Read the .env file into a dictionary
+    env_vars = {}
+    with open('.env', 'r') as f:
+        for line in f:
+            if '=' in line:
+                key, value = line.strip().split('=', 1)
+                env_vars[key] = value
+    # Convert the integer values to strings
+    new_value_str = str(new_value)
+    new_block_str = str(new_block)
+
+    # Update the values in the dictionary
+    env_vars['NET_VALUE'] = new_value_str
+    env_vars['NET_BLOCK'] = new_block_str
+
+    # Write the updated dictionary back to the .env file
+    with open('.env', 'w') as f:
+        for key, value in env_vars.items():
+            f.write(f"{key}={value}\n")
 
 def info_message():
     info = {

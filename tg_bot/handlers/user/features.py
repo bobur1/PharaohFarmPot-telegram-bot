@@ -1,7 +1,7 @@
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 
-from tg_bot.data.config import info_message, RPS, CONTRACT, abi, MORALIS_API_KEY, MORALIS_CHAIN, BSC_API_KEY
+from tg_bot.data.config import info_message, RPS, CONTRACT, abi, MORALIS_API_KEY, MORALIS_CHAIN, BSC_API_KEY, get_net_varibles, update_net_varibles, NET_BLOCK, NET_VALUE
 from tg_bot.data.database import get_wallet_user, add_user_wallet, get_user_ids
 from tg_bot.data.loader import dp, bot, scheduler
 
@@ -16,6 +16,7 @@ from web3.middleware import geth_poa_middleware
 import asyncio
 import requests
 import json
+import time
 from moralis import evm_api
 
 web3 = Web3(Web3.HTTPProvider(RPS))
@@ -89,8 +90,6 @@ async def listener():
     global prev_block_number
     # delay 6 blocks in order to binance scan api to save events
     block_number = web3.eth.block_number - 6
-    # block_number = 29078775
-    # block_number = prev_block_number
 
     if prev_block_number == 0:
         prev_block_number = block_number
@@ -198,7 +197,7 @@ async def listener():
 
         prev_block_number = block_number + 1
 
-scheduler.add_job(listener, 'interval', seconds=3)
+# scheduler.add_job(listener, 'interval', seconds=3)
 
 # Use the send_message method to send the message to the user
 async def send_message_to_user(user_id: int, message_text: str):
@@ -219,12 +218,72 @@ async def page_handler_info(call: CallbackQuery, callback_data: dict):
     except Exception:
         pass
 
+@dp.message_handler(commands=['netdeposit'])
+async def net_deposit(message: Message):
+    msg = await message.answer(text='⌛️')
+    net_value, _ = get_net_varibles()
+    response = net_value * 85 / 100 / 1000000000000000000
+    await msg.delete()
+    await message.answer(text=f'<b>Net deposit: {float(response):.2f} CAF</b>', reply_markup=choice_next())
+
+async def net_deposit_calculation():
+    binance_api_key = BSC_API_KEY
+    print('in net_deposit_calculation')
+
+    # Define pagination variables
+    total_value, current_block = get_net_varibles()
+    token_address = "0x5662ac531A2737C3dB8901E982B43327a2fDe2ae"
+    block_number = web3.eth.block_number - 6
+    block_step = 5000
+    max_iteration = 5
+
+    while max_iteration > 0:
+        print(f"current block: {current_block}")
+        from_block = current_block
+        to_block = from_block + block_step - 1
+
+        if to_block > block_number:
+            to_block = block_number
+            block_step = 0
+            print('To block ahead')
+        # Set up the BscScan API URL
+        url = f"https://api.bscscan.com/api?module=logs&action=getLogs&fromBlock={from_block}&toBlock={to_block}&address={token_address}&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic2=0x000000000000000000000000{contractAddress[2:].lower()}&apikey={binance_api_key}"
+
+        # Send the API request and get the response
+        response = requests.get(url)
+        data = response.json()
+
+        # Check if the response has the 'result' key
+        if 'result' in data:
+            # If there are no events in the current range, break the loop
+            if not data['result']:
+                current_block = to_block + 1
+                max_iteration -= 1
+                continue
+
+            # Iterate through the events and print the value data
+            for event in data['result']:
+                value = int(event['data'], 16)
+                total_value += value
+            
+            # Increment the current_block for the next iteration
+            current_block = to_block + 1
+            max_iteration -= 1
+        else:
+            print("Error:", data['message'])
+            break
+    
+    print(f"current net value: {total_value}")
+    print(f"current net block: {current_block}")
+    update_net_varibles(total_value, current_block)
+
+scheduler.add_job(net_deposit_calculation, 'interval', seconds=11)
 
 @dp.message_handler(commands=['help'])
 async def main_start(message: Message):
     await message.delete()
     await message.answer(text='<b>What can this bot do?</b>\n\nCommands:\n/start - Start the Bot\n/register_wallet - '
-                              'Register your Account\n/stats - Check your Pharaoh Farm Ptot Stats of your registered '
+                              'Register your Account\n/stats - Check your Pharaoh Farm Ptot Stats of your registered\n/netdeposit -Check Pharaoh Farm Ptot net deposit '
                               'wallet', reply_markup=choice_next())
 
 
