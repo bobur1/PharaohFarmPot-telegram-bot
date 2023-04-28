@@ -197,7 +197,7 @@ async def listener():
 
         prev_block_number = block_number + 1
 
-# scheduler.add_job(listener, 'interval', seconds=3)
+scheduler.add_job(listener, 'interval', seconds=3)
 
 # Use the send_message method to send the message to the user
 async def send_message_to_user(user_id: int, message_text: str):
