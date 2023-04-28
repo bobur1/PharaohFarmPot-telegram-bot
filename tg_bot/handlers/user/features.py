@@ -283,8 +283,8 @@ scheduler.add_job(net_deposit_calculation, 'interval', seconds=11)
 async def main_start(message: Message):
     await message.delete()
     await message.answer(text='<b>What can this bot do?</b>\n\nCommands:\n/start - Start the Bot\n/register_wallet - '
-                              'Register your Account\n/stats - Check your Pharaoh Farm Ptot Stats of your registered\n/netdeposit -Check Pharaoh Farm Ptot net deposit '
-                              'wallet', reply_markup=choice_next())
+                              'Register your Account\n/stats - Check your Pharaoh Farm Pot Stats of your registered\n/netdeposit - Check Pharaoh Farm Pot net deposit of the contract'
+                              , reply_markup=choice_next())
 
 
 @dp.callback_query_handler(text_startswith='check_account')
@@ -299,7 +299,7 @@ async def check_account(call: CallbackQuery):
         daily_payout = calculate_payout(call.message.chat.id)
         available = available_rewards(call.message.chat.id)
         double = double_up(call.message.chat.id)
-        await call.message.edit_text(text=f'<b>Your Pharaohs farm pot statistics:</b>\n\n\n📅Your Daily Payout: {float(daily_payout):.2f}  CAF\n💰Max Payout: {float(max_payout):.2f} CAF\n🎁Available Rewards: {float(available):.2f} CAF\n\nAmount of T1 referrals: {lvl["lvl_1"]}\nAmount of T2 referrals: {lvl["lvl_2"]}\nAmount of T3 referrals: {lvl["lvl_3"]}\nAmount of T4 referrals: {lvl["lvl_4"]}\nAmount of T5 referrals: {lvl["lvl_5"]}\nAmount of T6 referrals: {lvl["lvl_6"]}\nAmount of T7 referrals: {lvl["lvl_7"]}\n\n⏫How many CAF left until Double Up: {float(double):.2f} CAF', reply_markup=choice_next())
+        await call.message.edit_text(text=f'<b>Your Pharaoh Farm Pot statistics:</b>\n\n\n📅Your Daily Payout: {float(daily_payout):.2f}  CAF\n💰Max Payout: {float(max_payout):.2f} CAF\n🎁Available Rewards: {float(available):.2f} CAF\n\nAmount of T1 referrals: {lvl["lvl_1"]}\nAmount of T2 referrals: {lvl["lvl_2"]}\nAmount of T3 referrals: {lvl["lvl_3"]}\nAmount of T4 referrals: {lvl["lvl_4"]}\nAmount of T5 referrals: {lvl["lvl_5"]}\nAmount of T6 referrals: {lvl["lvl_6"]}\nAmount of T7 referrals: {lvl["lvl_7"]}\n\n⏫How many CAF left until Double Up: {float(double):.2f} CAF', reply_markup=choice_next())
 
 
 @dp.message_handler(commands=['stats'])
@@ -337,7 +337,7 @@ async def change__text(message: Message, state: FSMContext):
     await state.update_data(wallet=wallet)
     await message.delete()
     await message.answer(
-        text=f'<b>Your Wallet</b>\n\n{wallet}\n\n<b> If you made a mistake in the text or changed your mind about '
+        text=f'<b>Your Wallet</b>\n\n{wallet}\n\n<b>If you made a mistake in the text or changed your mind about '
              f'editing, press ❌ Cancel\nAnd repeat the procedure all over again</b>',
         reply_markup=get_choice_wallet())
     await AddWalletUser.wallet_state.set()
